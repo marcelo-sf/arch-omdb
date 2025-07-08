@@ -1,0 +1,92 @@
+networks:
+  backend:
+    driver: bridge
+  db-network:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:14
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+    networks:
+      - db-network
+    labels:
+      com.architecture-test.version: "1.0"
+      com.architecture-test.description: "API services database."
+
+
+  app:
+    build:
+      context: .
+      dockerfile: config/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://app:8000/health" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+    networks:
+      - backend
+      - db-network
+    labels:
+      com.architecture-test.version: "1.0"
+      com.architecture-test.description: "API services code."
+
+  nginx:
+    image: nginx:1.28.0
+    container_name: architecture-test
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f \"http://nginx/health\"" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+    networks:
+      - backend
+    labels:
+      com.architecture-test.version: "1.0"
+      com.architecture-test.description: "Nginx reverse proxy for app."
+
+volumes:
+  db_data:

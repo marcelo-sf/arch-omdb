@@ -1,0 +1,29 @@
+# Python byte‐code / caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+tests/__pycache__/
+
+# Virtual environments & env files
+venv/
+.env
+*.egg-info/
+src/movie_api.egg-info/
+
+# Git metadata
+.git
+.gitignore
+
+# IDE/editor settings
+.vscode/
+.idea/
+
+# macOS Finder
+.DS_Store
+
+# Docker / build artifacts
+docker-compose*.yml
+Dockerfile*
+build/
+dist/

@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+
+# Alembic
+alembic/versions/*.pyc
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# IDEs, Tools, and Miscellaneous
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.pyc
+*.pyo
+*.pyd
+*.sublime-*
+
+# MacOs
+.DS_Store
+
+# Build / Deployment
+output.sql/
+/project-root/src/movie_api.egg-info/
