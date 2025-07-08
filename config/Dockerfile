@@ -9,7 +9,6 @@ COPY requirements.txt setup.py ./
 
 COPY src/      src/
 COPY tests/      tests/
-COPY features/      features/
 COPY config/   config/
 COPY alembic/  alembic/
 COPY alembic.ini alembic.ini
@@ -28,7 +27,6 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 COPY --from=builder /app/src     ./src
 COPY --from=builder /app/tests     ./tests
-COPY --from=builder /app/features     ./features
 COPY --from=builder /app/config  ./config
 COPY --from=builder /app/alembic ./alembic
 COPY --from=builder /app/alembic.ini ./alembic.ini
